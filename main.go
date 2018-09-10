@@ -28,19 +28,26 @@ func main() {
 	if ipv4addr == "" || ipv6addr == "" {
 		addr, err := address.GetIpAddrs(iface)
 		if err != nil {
-			log.Fatalf("An error occured when get IP addresses from interface: %v", err)
+			log.Fatalf("an error occured when get IP addresses from interface: %v", err)
 		}
-		ipv4addr = ipv4addr || addr.Ipv4addr
-		ipv6addr = ipv6addr || addr.Ipv6addr
+		if ipv4addr == "" {
+			ipv4addr = addr.Ipv4addr
+		}
+		if ipv6addr == "" {
+			ipv6addr = addr.Ipv6addr
+		}
 	}
 
 	sess := session.Must(session.NewSession())
 
 	ctx := context.Background()
-	notifier := &notifier.Notifier{
-		sess:    sess,
-		context: ctx,
+	ntf := &notifier.Notifier{
+		Sess:    sess,
+		Context: ctx,
 	}
-	&notifier.Notify(ipv4addr, ipv6addr)
+	err := ntf.Notify(ipv4addr, ipv6addr)
+	if err != nil {
+		log.Fatalf("an error occured when notify route53: %v", err)
+	}
 	os.Exit(0)
 }

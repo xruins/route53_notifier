@@ -7,8 +7,8 @@ import (
 )
 
 type Notifier struct {
-	sess    session.Session
-	context context.Context
+	Sess    *session.Session
+	Context context.Context
 }
 
 func (n *Notifier) Notify(ipv4addr, ipv6addr string) error {
