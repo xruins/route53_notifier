@@ -31,28 +31,17 @@ type IPAddr struct {
 	IPv4Addr, IPv6Addr string
 }
 
-func GetIPAddr(iface, ifacev6 string) (*IPAddr, error) {
+func GetIPAddr(iface_name string) (*IPAddr, error) {
 	var ipv4, ipv6 string
-	ifv4, err := getIPAddrFromInterface(iface)
+	iface, err := getIPAddrFromInterface(iface_name)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to get IPv4 address: %s", err)
 	}
-	if ifv4.IPv4Addr != "" {
-		ipv4 = ifv4.IPv4Addr
+	if iface.IPv4Addr != "" {
+		ipv4 = iface.IPv4Addr
 	}
-	// if ifacev6 was specified, get v6 address from it
-	if ifacev6 != "" {
-		ifv6, err := getIPAddrFromInterface(iface)
-		if err != nil {
-			return nil, err
-		}
-		if ifv6.IPv6Addr != "" {
-			ipv6 = ifv6.IPv6Addr
-		}
-	} else { // if ifacev6 was not specified, use the v6 address of ifacev4
-		if ifv4.IPv6Addr != "" {
-			ipv4 = ifv4.IPv6Addr
-		}
+	if iface.IPv6Addr != "" {
+		ipv6 = iface.IPv6Addr
 	}
 
 	if ipv4 == "" && ipv6 == "" {

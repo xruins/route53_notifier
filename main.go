@@ -20,18 +20,20 @@ func main() {
 	flag.StringVar(&ipv4addr, "ipv4", "", "IPv4 address to notify. used for override auto detected one.")
 	flag.StringVar(&ipv6addr, "ipv6", "", "IPv6 address to notify. used for override auto detected one.")
 
-	if ipv4addr == "" || ipv6addr == "" {
-		ipaddrs, err := address.GetIPAddr(iface, ifacev6)
+	if ipv4addr == "" {
+		ipaddrs, err := address.GetIPAddr(iface)
 		if err != nil {
-			log.Fatalf("failed to get ip addresses: %s\n", err)
+			log.Fatalf("failed to get ipv4 addresses: %s\n", err)
 		}
+		ipv4addr = ipaddrs.IPv4Addr
+	}
 
-		if ipv4addr == "" {
-			ipv4addr = ipaddrs.IPv4Addr
+	if ipv6addr == "" {
+		ipaddrs, err := address.GetIPAddr(ifacev6)
+		if err != nil {
+			log.Fatalf("failed to get ipv6 addresses: %s\n", err)
 		}
-		if ipv6addr == "" {
-			ipv6addr = ipaddrs.IPv6Addr
-		}
+		ipv6addr = ipaddrs.IPv6Addr
 	}
 
 	sess := session.Must(session.NewSession())
