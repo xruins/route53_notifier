@@ -82,9 +82,9 @@ func getIPAddrFromInterface(iface_name string) (*IPAddr, error) {
 
 		if isGlobalIP(&ip) {
 			ip_str := ip.String()
-			if isIPv4Addr(ip_str) {
+			if isIPv4Addr(&ip) {
 				ret.IPv4Addr = ip_str
-			} else if isIPv6Addr(ip_str) {
+			} else if isIPv6Addr(&ip) {
 				ret.IPv6Addr = ip_str
 			} else {
 				return nil, fmt.Errorf("ambigious ip address detected: %s", ip_str)
@@ -95,16 +95,16 @@ func getIPAddrFromInterface(iface_name string) (*IPAddr, error) {
 	return ret, nil
 }
 
-func isIPv4Addr(addr string) bool {
-	if len(addr) == net.IPv4len {
+func isIPv4Addr(ip *net.IP) bool {
+	if len(*ip) == net.IPv4len {
 		return true
 	} else {
 		return false
 	}
 }
 
-func isIPv6Addr(addr string) bool {
-	if len(addr) == net.IPv6len {
+func isIPv6Addr(ip *net.IP) bool {
+	if len(*ip) == net.IPv6len {
 		return true
 	} else {
 		return false
