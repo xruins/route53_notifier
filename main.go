@@ -5,7 +5,6 @@ import (
 	"flag"
 	"log"
 	"os"
-	"time"
 
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/xruins/route53_notifier/address"
@@ -13,28 +12,25 @@ import (
 )
 
 func main() {
-	var credential, host, iface, ipv4addr, ipv6addr string
-	var daemon bool
-	var interval time.Duration
+	var fqdn, iface, ifacev6, ipv4addr, ipv6addr string
 
-	flag.StringVar(&credential, "c", "", "Path to Credential.")
-	flag.StringVar(&host, "h", "", "Host for the key of A/AAAA records.")
-	flag.StringVar(&iface, "i", "", "Network interface name to get IP addresses.")
-	flag.StringVar(&ipv4addr, "4", "", "IPv4 address to notify. used for override auto detected one.")
-	flag.StringVar(&ipv6addr, "6", "", "IPv6 address to notify. used for override auto detected one.")
-	flag.BoolVar(&daemon, "d", false, "If true, this program persists and continue to notify IP addresses.")
-	flag.DurationVar(&interval, "i", 600, "Seconds of notification interval. Works only for daemon mode.")
+	flag.StringVar(&fqdn, "fqdn", "", "FQDN for the key of A/AAAA records.")
+	flag.StringVar(&iface, "iface", "", "Network interface name to get IPv4 addresses.")
+	flag.StringVar(&ifacev6, "ifacev6", "", "Network interface name to get IPv6 addresses. If blank, use the one of v4.")
+	flag.StringVar(&ipv4addr, "ipv4", "", "IPv4 address to notify. used for override auto detected one.")
+	flag.StringVar(&ipv6addr, "ipv6", "", "IPv6 address to notify. used for override auto detected one.")
 
 	if ipv4addr == "" || ipv6addr == "" {
-		addr, err := address.GetIpAddrs(iface)
+		ipaddrs, err := address.GetIPAddr(iface, ifacev6)
 		if err != nil {
-			log.Fatalf("an error occured when get IP addresses from interface: %v", err)
+			log.Fatalf("failed to get ip addresses: %s\n", err)
 		}
+
 		if ipv4addr == "" {
-			ipv4addr = addr.Ipv4addr
+			ipv4addr = ipaddrs.Ipv4addr
 		}
 		if ipv6addr == "" {
-			ipv6addr = addr.Ipv6addr
+			ipv6addr = ipaddrs.Ipv6addr
 		}
 	}
 
@@ -45,9 +41,10 @@ func main() {
 		Sess:    sess,
 		Context: ctx,
 	}
-	err := ntf.Notify(ipv4addr, ipv6addr)
-	if err != nil {
-		log.Fatalf("an error occured when notify route53: %v", err)
+	ntfErr := ntf.Notify(ipv4addr, ipv6addr)
+	if ntfErr != nil {
+		log.Fatalf("an error occured when notify route53: %s\n", ntfErr)
 	}
+	log.Printf("successfully updated. ipv4: %s, ipv6: %s\n", ipv4addr, ipv6addr)
 	os.Exit(0)
 }
