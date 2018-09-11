@@ -27,10 +27,10 @@ func main() {
 		}
 
 		if ipv4addr == "" {
-			ipv4addr = ipaddrs.Ipv4addr
+			ipv4addr = ipaddrs.IPv4Addr
 		}
 		if ipv6addr == "" {
-			ipv6addr = ipaddrs.Ipv6addr
+			ipv6addr = ipaddrs.IPv6Addr
 		}
 	}
 
