@@ -19,6 +19,8 @@ func main() {
 	flag.StringVar(&ifacev6, "ifacev6", "", "Network interface name to get IPv6 addresses. If blank, use the one of v4.")
 	flag.StringVar(&ipv4addr, "ipv4", "", "IPv4 address to notify. used for override auto detected one.")
 	flag.StringVar(&ipv6addr, "ipv6", "", "IPv6 address to notify. used for override auto detected one.")
+	flag.Parse()
+
 
 	if ipv4addr == "" {
 		ipaddrs, err := address.GetIPAddr(iface)
