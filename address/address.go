@@ -27,10 +27,6 @@ func init() {
 	}
 }
 
-type IPAddr struct {
-	IPv4Addr, IPv6Addr string
-}
-
 func GetIPAddr(iface_name string) (*IPAddr, error) {
 	var ipv4, ipv6 string
 	iface, err := getIPAddrFromInterface(iface_name)
