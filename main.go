@@ -36,6 +36,10 @@ func main() {
 		ipv6addr = ipaddrs.IPv6Addr
 	}
 
+	if ipv4addr == "" && ipv6addr == "" {
+		log.Fatalln("couldn't get neither ipv4 address nor ipv6 one")
+	}
+
 	sess := session.Must(session.NewSession())
 	ntf := &notifier.Notifier{
 		FQDN:         fqdn,

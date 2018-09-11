@@ -1,7 +1,6 @@
 package address
 
 import (
-	"errors"
 	"fmt"
 	"net"
 )
@@ -38,10 +37,6 @@ func GetIPAddr(iface_name string) (*IPAddr, error) {
 	}
 	if iface.IPv6Addr != "" {
 		ipv6 = iface.IPv6Addr
-	}
-
-	if ipv4 == "" && ipv6 == "" {
-		return nil, errors.New("couldn't get neither ipv4 addr not ipv6 one")
 	}
 
 	return &IPAddr{IPv4Addr: ipv4, IPv6Addr: ipv6}, nil
