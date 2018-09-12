@@ -5,7 +5,6 @@ import (
 	"log"
 	"os"
 
-	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/xruins/route53_notifier/address"
 	"github.com/xruins/route53_notifier/notifier"
 )
@@ -42,17 +41,15 @@ func main() {
 		log.Fatalln("couldn't get neither ipv4 address nor ipv6 one")
 	}
 
-	sess := session.Must(session.NewSession())
 	ntf := &notifier.Notifier{
 		FQDN:         fqdn,
 		HostedZoneId: hostedZoneId,
 		IPAddr:       &address.IPAddr{IPv4Addr: ipv4addr, IPv6Addr: ipv6addr},
-		Session:      sess,
 	}
-	ntfErr := ntf.Notify()
+	ntfMsg, ntfErr := ntf.Notify()
 	if ntfErr != nil {
 		log.Fatalf("an error occured when notify route53: %s\n", ntfErr)
 	}
-	log.Printf("successfully updated. ipv4: %s, ipv6: %s\n", ipv4addr, ipv6addr)
+	log.Printf("successfully updated. ipv4: %s, ipv6: %s, message: %s\n", ipv4addr, ipv6addr, ntfMsg)
 	os.Exit(0)
 }

@@ -11,7 +11,6 @@ func (ipaddr *IPAddr) ToResourceRecordSet(fqdn string) []*route53.ResourceRecord
 	if ipaddr.IPv4Addr != "" {
 		recordSets = append(recordSets, generateResourceRecordSet(fqdn, "A", ipaddr.IPv4Addr))
 	}
-
 	if ipaddr.IPv6Addr != "" {
 		recordSets = append(recordSets, generateResourceRecordSet(fqdn, "AAAA", ipaddr.IPv6Addr))
 	}

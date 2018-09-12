@@ -2,7 +2,6 @@ package notifier
 
 import (
 	"fmt"
-	"log"
 
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/route53"
@@ -13,11 +12,15 @@ type Notifier struct {
 	FQDN         string
 	HostedZoneId string
 	IPAddr       *address.IPAddr
-	Session      *session.Session
+	session      *session.Session
 }
 
-func (n *Notifier) Notify() error {
-	r53 := route53.New(n.Session)
+func init() {
+	session := session.Must(session.NewSession())
+}
+
+func (n *Notifier) Notify() (string, error) {
+	r := route53.New(n.session)
 	recordSets := n.IPAddr.ToResourceRecordSet(n.FQDN)
 	changeBatch := generateChangeBatch(recordSets)
 
@@ -25,17 +28,13 @@ func (n *Notifier) Notify() error {
 		ChangeBatch:  changeBatch,
 		HostedZoneId: &n.HostedZoneId,
 	}
-	output, err := r53.ChangeResourceRecordSets(input)
+	output, err := r.ChangeResourceRecordSets(input)
 	if err != nil {
-		return fmt.Errorf("failed to update route53 resource record sets: %s", err)
+		return nil, fmt.Errorf("failed to update route53 resource record sets: %s", err)
 	}
-	log.Printf(
-		"succeed to update resource record sets of HostedZoneID %s. detail: %s\n",
-		n.HostedZoneId,
-		output.GoString(),
-	)
 
-	return nil
+	msg := output.GoString
+	return msg, nil
 }
 
 var route53ChangeAction = "CREATE"
