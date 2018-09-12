@@ -20,6 +20,9 @@ func main() {
 	flag.StringVar(&ipv6addr, "ipv6", "", "IPv6 address to notify. used for override auto detected one.")
 	flag.Parse()
 
+	if ipv4addr == "" && ipv6addr == "" && iface == "" && ifacev6 == "" {
+		log.Fatalln("specify at least one of -iface, -ifacev6, -ipv4addr and -ipv6addr.")
+	}
 
 	if ipv4addr == "" {
 		ipaddrs, err := address.GetIPAddr(iface)
