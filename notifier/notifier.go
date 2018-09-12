@@ -15,8 +15,8 @@ type Notifier struct {
 	session      *session.Session
 }
 
-func init() {
-	session := session.Must(session.NewSession())
+func (n *Notifier) init() {
+	n.session = session.Must(session.NewSession())
 }
 
 func (n *Notifier) Notify() (string, error) {
@@ -30,10 +30,10 @@ func (n *Notifier) Notify() (string, error) {
 	}
 	output, err := r.ChangeResourceRecordSets(input)
 	if err != nil {
-		return nil, fmt.Errorf("failed to update route53 resource record sets: %s", err)
+		return "", fmt.Errorf("failed to update route53 resource record sets: %s", err)
 	}
 
-	msg := output.GoString
+	msg := output.GoString()
 	return msg, nil
 }
 
