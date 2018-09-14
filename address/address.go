@@ -52,12 +52,15 @@ func getIPAddrFromInterface(iface_name string) (*IPAddr, error) {
 		return nil, err
 	}
 
-	var ret *IPAddr
+	var ret IPAddr
 	for _, addr := range addrs {
 		addr_str := addr.String()
 		ip, _, err := net.ParseCIDR(addr_str)
 		if err != nil {
 			return nil, fmt.Errorf("ambigious ip address detected: %s", addr_str)
+		}
+		if ip == nil {
+			continue
 		}
 
 		if isGlobalIP(&ip) {
@@ -72,7 +75,7 @@ func getIPAddrFromInterface(iface_name string) (*IPAddr, error) {
 		}
 	}
 
-	return ret, nil
+	return &ret, nil
 }
 
 func isIPv4Addr(ip *net.IP) bool {
