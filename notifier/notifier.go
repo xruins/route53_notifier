@@ -12,15 +12,16 @@ type Notifier struct {
 	FQDN         string
 	HostedZoneId string
 	IPAddr       *address.IPAddr
-	session      *session.Session
 }
 
-func (n *Notifier) init() {
-	n.session = session.Must(session.NewSession())
+var sess *session.Session
+
+func init() {
+	sess = session.Must(session.NewSession())
 }
 
 func (n *Notifier) Notify() (string, error) {
-	r := route53.New(n.session)
+	r := route53.New(sess)
 	recordSets := n.IPAddr.ToResourceRecordSet(n.FQDN)
 	changeBatch := generateChangeBatch(recordSets)
 
