@@ -21,7 +21,7 @@ func generateResourceRecordSet(fqdn, recordType, value string, ttl int64) *route
 	return &route53.ResourceRecordSet{
 		Name: &fqdn,
 		Type: &recordType,
-		TTL: &ttl,
+		TTL:  &ttl,
 		ResourceRecords: []*route53.ResourceRecord{
 			&route53.ResourceRecord{Value: &value},
 		},

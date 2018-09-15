@@ -12,7 +12,7 @@ type Notifier struct {
 	FQDN         string
 	HostedZoneId string
 	IPAddr       *address.IPAddr
-	TTL int64
+	TTL          int64
 }
 
 var sess *session.Session
@@ -39,7 +39,7 @@ func (n *Notifier) Notify() (string, error) {
 	return msg, nil
 }
 
-var route53ChangeAction = "CREATE"
+var route53ChangeAction = "UPSERT"
 
 func generateChangeBatch(recordSets []*route53.ResourceRecordSet) *route53.ChangeBatch {
 	var changes []*route53.Change
