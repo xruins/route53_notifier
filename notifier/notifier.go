@@ -12,6 +12,7 @@ type Notifier struct {
 	FQDN         string
 	HostedZoneId string
 	IPAddr       *address.IPAddr
+	TTL int64
 }
 
 var sess *session.Session
@@ -22,7 +23,7 @@ func init() {
 
 func (n *Notifier) Notify() (string, error) {
 	r := route53.New(sess)
-	recordSets := n.IPAddr.ToResourceRecordSet(n.FQDN)
+	recordSets := n.IPAddr.ToResourceRecordSet(n.FQDN, n.TTL)
 	changeBatch := generateChangeBatch(recordSets)
 
 	input := &route53.ChangeResourceRecordSetsInput{
