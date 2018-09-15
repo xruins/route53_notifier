@@ -20,3 +20,7 @@ Usage of ./route53_notifier:
 ```
 
 route53_notifier requires at least one of `-iface`, `-ifacev6`, `-ipv4` and `-ipv6`.
+
+# Build
+
+`GO111MODULE=on go build`
