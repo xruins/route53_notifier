@@ -22,10 +22,15 @@ func main() {
 	flag.Int64Var(&ttl, "ttl", 3600, "seconds to TTL of DNS record.")
 	flag.Parse()
 
+	// check commandline args
+	if fqdn == "" || hostedZoneId == "" {
+		log.Fatalln("both of -fqdn and -hosted_zone_id are required.")
+	}
 	if ipv4addr == "" && ipv6addr == "" && iface == "" && ifacev6 == "" {
 		log.Fatalln("specify at least one of -iface, -ifacev6, -ipv4addr and -ipv6addr.")
 	}
 
+	// get ipv4/v6 addresses from interfaces
 	if ipv4addr == "" {
 		ipaddrs, err := address.GetIPAddr(iface)
 		if err != nil {
@@ -46,6 +51,7 @@ func main() {
 		log.Fatalln("couldn't get neither ipv4 address nor ipv6 one")
 	}
 
+	// notify Route53
 	ntf := &notifier.Notifier{
 		FQDN:         fqdn,
 		HostedZoneId: hostedZoneId,
