@@ -30,7 +30,7 @@ func GetIPAddr(iface_name string) (*IPAddr, error) {
 	var ipv4, ipv6 string
 	iface, err := getIPAddrFromInterface(iface_name)
 	if err != nil {
-		return nil, fmt.Errorf("failed to get IPv4 address: %s", err)
+		return nil, fmt.Errorf("failed to get address from interface %s: %s", iface_name, err)
 	}
 	if iface.IPv4Addr != "" {
 		ipv4 = iface.IPv4Addr
