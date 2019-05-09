@@ -7,6 +7,7 @@ require (
 	github.com/aws/aws-sdk-go v1.15.35
 	github.com/boltdb/bolt v1.3.1 // indirect
 	github.com/golang/dep v0.5.0 // indirect
+	github.com/golang/go v0.0.0-20180917111458-859cf7fc0f45 // indirect
 	github.com/golang/protobuf v1.2.0 // indirect
 	github.com/jmank88/nuts v0.3.0 // indirect
 	github.com/nightlyone/lockfile v0.0.0-20180618180623-0ad87eef1443 // indirect
